@@ -39,6 +39,8 @@ using grpc::Status;
 using helloworld::HelloRequest;
 using helloworld::HelloReply;
 using helloworld::Greeter;
+using helloworld::SimpleRequest;
+using helloworld::SimpleResponse;
 
 class ServerImpl final {
  public:
@@ -92,8 +94,9 @@ class ServerImpl final {
         // the tag uniquely identifying the request (so that different CallData
         // instances can serve different requests concurrently), in this case
         // the memory address of this CallData instance.
-        service_->RequestSayHello(&ctx_, &request_, &responder_, cq_, cq_,
-                                  this);
+//        service_->RequestSayHello(&ctx_, &request_, &responder_, cq_, cq_,
+//                                  this);
+            service_->RequestUnaryCall(&ctx_, &request_, &responder_, cq_, cq_, this);
       } else if (status_ == PROCESS) {
         // Spawn a new CallData instance to serve new clients while we process
         // the one for this CallData. The instance will deallocate itself as
@@ -101,8 +104,8 @@ class ServerImpl final {
         new CallData(service_, cq_);
 
         // The actual processing.
-        std::string prefix("Hello ");
-        reply_.set_message(prefix + request_.name());
+//        std::string prefix("Hello ");
+//        reply_.set_message(prefix + request_.name());
 
         // And we are done! Let the gRPC runtime know we've finished, using the
         // memory address of this instance as the uniquely identifying tag for
@@ -127,13 +130,17 @@ class ServerImpl final {
     // client.
     ServerContext ctx_;
 
-    // What we get from the client.
-    HelloRequest request_;
-    // What we send back to the client.
-    HelloReply reply_;
+    SimpleRequest request_;
+    SimpleResponse reply_;
+
+//    // What we get from the client.
+//    HelloRequest request_;
+//    // What we send back to the client.
+//    HelloReply reply_;
 
     // The means to get back to the client.
-    ServerAsyncResponseWriter<HelloReply> responder_;
+//    ServerAsyncResponseWriter<HelloReply> responder_;
+    ServerAsyncResponseWriter<SimpleResponse> responder_;
 
     // Let's implement a tiny state machine with the following states.
     enum CallStatus { CREATE, PROCESS, FINISH };
