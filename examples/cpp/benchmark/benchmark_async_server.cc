@@ -37,6 +37,7 @@ using grpc::ServerContext;
 using grpc::ServerCompletionQueue;
 using grpc::Status;
 using grpc::testing::SimpleRequest;
+using grpc::testing::Payload;
 using grpc::testing::SimpleResponse;
 using grpc::testing::BenchmarkService;
 
@@ -103,12 +104,17 @@ class ServerImpl final {
         // The actual processing.
 //        std::string prefix("Hello ");
 //        reply_.set_message(prefix + request_.name());
+        Payload* payload = new Payload();
+        char one_byte = '1';
+        payload->set_body(&one_byte, 1);
+        reply_.set_allocated_payload(payload);
 
         // And we are done! Let the gRPC runtime know we've finished, using the
         // memory address of this instance as the uniquely identifying tag for
         // the event.
         status_ = FINISH;
         responder_.Finish(reply_, Status::OK, this);
+
       } else {
         GPR_ASSERT(status_ == FINISH);
         // Once in the FINISH state, deallocate ourselves (CallData).
