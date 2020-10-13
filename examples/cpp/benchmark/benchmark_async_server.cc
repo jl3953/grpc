@@ -1,4 +1,5 @@
 /*
+"$HOME/grpc/examples/cpp/helloworld/cmake/build/greeter_async_server"
  *
  * Copyright 2015 gRPC authors.
  *
@@ -108,6 +109,8 @@ class ServerImpl final {
         char one_byte = '1';
         payload->set_body(&one_byte, 1);
         reply_.set_allocated_payload(payload);
+	reply_.set_username("j");
+	reply_.set_oauth_scope("s");
 
         // And we are done! Let the gRPC runtime know we've finished, using the
         // memory address of this instance as the uniquely identifying tag for
